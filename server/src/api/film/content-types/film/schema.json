@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "films",
+  "info": {
+    "singularName": "film",
+    "pluralName": "films",
+    "displayName": "film"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tittle": {
+      "type": "string"
+    },
+    "released": {
+      "type": "date"
+    },
+    "director": {
+      "type": "string"
+    },
+    "plot": {
+      "type": "text"
+    },
+    "slug": {
+      "type": "string"
+    }
+  }
+}
