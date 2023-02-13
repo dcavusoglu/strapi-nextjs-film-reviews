@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Layout from "../components/Layout"
 import Films from "../components/Films"
 import useSWR from 'swr'
+
 const FilmList = ({films}) => {
   const [pageIndex, setPageIndex] = useState(1);
   const { data } = useSWR(
@@ -52,7 +53,7 @@ const FilmList = ({films}) => {
 export default FilmList
 
 export async function getStaticProps() {
-  const filmsResponse = await fetcher(`${process.env.NEXT_PUBLIC_STRAPI_URL}/films?pagination[page]=${pageIndex}&pagination[pageSize]=5`);
+  const filmsResponse = await fetcher(`${process.env.NEXT_PUBLIC_STRAPI_URL}/films?pagination[page]=1&pagination[pageSize]=5`);
   console.log(filmsResponse.data);
   return {
     props: {

@@ -8,7 +8,7 @@ const Films = ({films}) => {
           films.data.map((film) => {
             return (
               <li key={film.id}>
-                <Link href={`film/`+film.id}>{film.attributes.title}</Link>
+                <Link href={`film/`+film.attributes.slug}>{film.attributes.title}</Link>
               </li>
             )
           })
