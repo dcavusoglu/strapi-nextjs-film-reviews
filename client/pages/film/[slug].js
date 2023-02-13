@@ -22,6 +22,6 @@ export async function getServerSideProps({ params }) {
       film: filmResponse.data
     }
   }
-}
+ }
 export default Film;
  

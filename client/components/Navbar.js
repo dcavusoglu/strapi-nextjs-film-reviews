@@ -1,5 +1,38 @@
 import Link from "next/link"
+import { useUser } from '../lib/authContext';
+import { fetcher } from '../lib/api';
+import { setToken, unsetToken } from '../lib/auth';
+import { useState } from "react";
 const Navbar = () => {
+
+  const { user, loading } = useUser();
+  const [ data, setData] = useState({
+    identifier: '',
+    password:''
+  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = await fetcher(`${process.env.NEXT_PUBLIC_STRAPI_URL}/auth/local)`, {
+      method: 'POST',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      body: ({
+        identifier: data.identifier,
+        password: data.password
+      })
+    });
+    setToken(data);
+  };
+
+  const logout = () => {
+    unsetToken();
+  }
+
+  const handleChange = (e) => {
+    setData({...data, [e.target.name]: e.target.value});
+  };
+
   return (
     <nav className="
           flex flex-wrap
@@ -49,7 +82,71 @@ const Navbar = () => {
               </span>
             </Link>
           </li>
-         </ul>
+          {!loading &&
+          ( user ? (
+            <li>
+              <Link href="/profile" className="md:p-2 py-2 block hover:text-purple-400">
+                Profile
+              </Link>
+            </li>
+          ) : (
+            ""
+          ))
+          }
+          {!loading &&
+          ( user ? (
+            <li>
+              <Link onClick={logout} style={{cursor: 'pointer'}} className="md:p-2 py-2 block hover:text-purple-400">
+                Log out
+              </Link>
+            </li>
+          ) : (
+            ""
+          ))
+          }
+
+           {!loading && !user ? (
+            <>
+              <li>
+                <form onSubmit={handleSubmit} className="form-inline">
+                  <input
+                    type="text"
+                    name="identifier"
+                    onChange={handleChange}
+                    placeholder="Username"
+                    className="md:p-2 form-input py-2 rounded mx-2"
+                    required
+                  />
+                  <input
+                    type="password"
+                    name="password"
+                    onChange={handleChange}
+                    placeholder="Password"
+                    className="md:p-2 form-input py-2 rounded mx-2"
+                    required
+                  />
+
+                  <button
+                    className="md:p-2 rounded py-2 text-black bg-purple-200 p-2"
+                    type="submit"
+                  >
+                    Login
+                  </button>
+                </form>
+              </li>
+              <li>
+                <Link href="/register">
+                  <span className="md:p-2 block py-2 hover:text-purple-400 text-black">
+                    Register
+                  </span>
+                </Link>
+              </li>
+            </>
+          ) : (
+            ''
+          )}
+
+        </ul>
       </div>
     </nav>
 
