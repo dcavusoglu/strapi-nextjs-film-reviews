@@ -5,7 +5,7 @@ import {useFetchUser} from "../../lib/authContext";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-const Film = ({film, jwt}) => {
+const Film = ({film, jwt, error}) => {
   const router = useRouter();
   const {user, loading} = useFetchUser();
   const [review, setReview] = useState({
@@ -37,7 +37,14 @@ const Film = ({film, jwt}) => {
     } catch (error) {
       console.error('error with request', error);
     }
-  }
+  };
+  if (error) {
+    return (
+      <Layout>
+        <p>{error}</p>
+      </Layout>
+    );
+  } else {
   return (
     <Layout user={user}>
       <h1 className="text-5xl md:text-6xl font-extrabold leading-tighter mb-4">
@@ -51,7 +58,15 @@ const Film = ({film, jwt}) => {
           {film.attributes.director}
         </span>
       </p>
-       {user && (
+      <h2 className="text-3xl md:text-4xl font-extrabold leading-tighter mb-4 mt-4">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400 py-2">
+            Plot
+          </span>
+        </h2>
+        <div className="tracking-wide font-normal text-sm">
+          {film.attributes.plot}
+        </div>
+      {user && (
           <>
             <h2 className="text-3xl md:text-4xl font-extrabold leading-tighter mb-4 mt-4">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400 py-2">
@@ -93,6 +108,7 @@ const Film = ({film, jwt}) => {
         )}
     </Layout>
   )
+  }
 }
 
 export async function getServerSideProps({ req, params }) {
@@ -109,11 +125,19 @@ export async function getServerSideProps({ req, params }) {
   );
 
   console.log('filmResponse:',filmResponse)
-  return {
-    props: {
-      film: filmResponse.data,
-      jwt: jwt ? jwt : '',
-    }
+  if (filmResponse.data) {
+    return {
+      props: {
+        film: filmResponse.data,
+        jwt: jwt ? jwt : '',
+      },
+    };
+  } else {
+    return {
+      props: {
+        error: filmResponse.error.message,
+      },
+    };
   }
  }
 export default Film;
