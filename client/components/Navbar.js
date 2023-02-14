@@ -12,17 +12,18 @@ const Navbar = () => {
   });
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = await fetcher(`${process.env.NEXT_PUBLIC_STRAPI_URL}/auth/local)`, {
+    const responseData = await fetcher(`${process.env.NEXT_PUBLIC_STRAPI_URL}/auth/local`, {
       method: 'POST',
-      header: {
+      headers: {
         'Content-Type': 'application/json'
       },
-      body: ({
+      body: JSON.stringify({
         identifier: data.identifier,
-        password: data.password
-      })
+        password: data.password,
+      }),
     });
-    setToken(data);
+    console.log(responseData);
+    setToken(responseData);
   };
 
   const logout = () => {
@@ -96,9 +97,9 @@ const Navbar = () => {
           {!loading &&
           ( user ? (
             <li>
-              <Link onClick={logout} style={{cursor: 'pointer'}} className="md:p-2 py-2 block hover:text-purple-400">
+              <span onClick={logout} style={{cursor: 'pointer'}} className="md:p-2 py-2 block hover:text-purple-400">
                 Log out
-              </Link>
+              </span>
             </li>
           ) : (
             ""
